@@ -104,7 +104,9 @@
             <button type="submit">Submit</button>
         </form>
         <h3>Output</h3>
-        <div id="output">{{response_text}}</div>
+        <div id="output"> {% autoescape off %}
+            {{response_text}} {% endautoescape %}
+        </div>
     </div>
     <script>
         const form = document.getElementById('agendaForm');
@@ -112,13 +114,13 @@
         const output = document.getElementById('output');
 
         form.addEventListener('submit', function (e) {
-            e.preventDefault();
-            const value = scheduleInput.value.trim();
-            if (value) {
-                output.textContent = "Loading...";
-            } else {
-                output.textContent = "Please enter a schedule.";
-            }
+            // // e.preventDefault();
+            // const value = scheduleInput.value.trim();
+            // if (value) {
+            //     output.textContent = "Loading...";
+            // } else {
+            //     output.textContent = "Please enter a schedule.";
+            // }
         });
     </script>
 </body>
