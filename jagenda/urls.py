@@ -21,5 +21,6 @@ from agenda.views import index, agenda
 urlpatterns = [
     path('', index),
     path('agenda/', agenda),
+    path('wechat/', agenda),
     path('admin/', admin.site.urls),
 ]

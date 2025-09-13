@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Agenda</title>
+    <style>
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background: linear-gradient(135deg, #e0e7ff 0%, #f8fafc 100%);
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+            padding: 40px 32px;
+            max-width: 480px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h2 {
+            color: #3b82f6;
+            font-size: 2rem;
+            margin-bottom: 18px;
+        }
+
+        label {
+            font-weight: 500;
+            color: #374151;
+            display: block;
+            margin-bottom: 8px;
+            text-align: left;
+        }
+
+        textarea {
+            width: 100%;
+            height: 110px;
+            margin-bottom: 18px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            padding: 12px;
+            font-size: 1rem;
+            background: #f1f5f9;
+            resize: vertical;
+            transition: border 0.2s;
+        }
+
+        textarea:focus {
+            border: 1.5px solid #3b82f6;
+            outline: none;
+        }
+
+        #output {
+            border: 1px solid #cbd5e1;
+            padding: 18px;
+            min-height: 80px;
+            background: #f8fafc;
+            border-radius: 8px;
+            color: #374151;
+            margin-top: 10px;
+            font-size: 1.08rem;
+        }
+
+        button {
+            background: #3b82f6;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 28px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 8px;
+        }
+
+        button:hover {
+            background: #2563eb;
+        }
+
+        h3 {
+            color: #2563eb;
+            margin-top: 32px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>JAgenda</h2>
+        <form method="POST" id="wechatForm" action="/wechat/">
+            {% csrf_token %}
+            <label for="user_input">复制微信聊天记录:</label><br>
+            <textarea id="user_input" name="user_input"
+                placeholder="Type your wechat chat here...">{{user_input}}</textarea><br>
+            <button type="submit">整理信息！</button>
+        </form>
+
+    </div>
+    <div id="output">
+        <h3>结果</h3>
+
+        {% autoescape off %}
+        {{response_text}} {% endautoescape %}
+    </div>
+    <script>
+        const form = document.getElementById('wechatForm');
+        const scheduleInput = document.getElementById('user_input');
+        const output = document.getElementById('output');
+
+        form.addEventListener('submit', function (e) {
+            // // e.preventDefault();
+            // const value = scheduleInput.value.trim();
+            // if (value) {
+            //     output.textContent = "Loading...";
+            // } else {
+            //     output.textContent = "Please enter a schedule.";
+            // }
+        });
+    </script>
+</body>
+
+</html>
