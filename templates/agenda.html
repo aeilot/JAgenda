@@ -96,11 +96,14 @@
 <body>
     <div class="container">
         <h2>JAgenda</h2>
-        <form method="POST" id="agendaForm" action="/agenda/">
+        <form method="POST" enctype="multipart/form-data" id="agendaForm" action="/agenda/">
             {% csrf_token %}
             <label for="user_input">输入你的日程:</label><br>
             <textarea id="user_input" name="user_input"
                 placeholder="Type your agenda here...">{{user_input}}</textarea><br>
+            <label for="pdf_file" style="margin-top:16px;display:block;text-align:left;">或上传 PDF 日程表:</label>
+            <input type="file" id="pdf_file" name="pdf_file" accept="application/pdf"
+                style="margin-bottom:16px;width:100%;" />
             <label>示例: 10:00 线性代数
                 12:00 数学分析</label><br>
 

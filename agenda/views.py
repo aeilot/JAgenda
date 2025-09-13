@@ -1,3 +1,4 @@
+import pdfplumber
 from django.shortcuts import render
 import openai
 from openai import OpenAI
@@ -18,13 +19,24 @@ def agenda(request):
     response_text = ""
     if request.method == "POST":
         user_input = request.POST.get('user_input', '')
+        pdf_file = request.FILES.get('pdf_file')
+
+        # If PDF uploaded, extract text
+        if pdf_file:
+            try:
+                with pdfplumber.open(pdf_file) as pdf:
+                    pdf_text = ""
+                    for page in pdf.pages:
+                        pdf_text += page.extract_text() or ""
+                user_input = pdf_text.strip()
+            except Exception as e:
+                print(f"PDF parsing error: {e}")
+                response_text = "无法识别该PDF内容，请上传文本型PDF或手动输入日程。"
         # Clean input: strip whitespace and remove unwanted characters
         user_input = user_input.strip()
-        # Optionally, remove non-printable/control characters
         user_input = ''.join(c for c in user_input if c.isprintable())
 
         if user_input:
-            # Make OpenAI API request using the shared client
             completion = client.chat.completions.create(
                 model="tencent/Hunyuan-MT-7B",
                 messages=[
