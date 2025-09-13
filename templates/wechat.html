@@ -103,14 +103,17 @@
                 placeholder="Type your wechat chat here...">{{user_input}}</textarea><br>
             <button type="submit">整理信息！</button>
         </form>
-
     </div>
+    {% if output %}
     <div id="output">
         <h3>结果</h3>
 
         {% autoescape off %}
         {{response_text}} {% endautoescape %}
+
     </div>
+    {% endif %}
+
     <script>
         const form = document.getElementById('wechatForm');
         const scheduleInput = document.getElementById('user_input');

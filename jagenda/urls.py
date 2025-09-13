@@ -16,11 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from agenda.views import index, agenda
+from agenda.views import index, agenda, wechat
 
 urlpatterns = [
     path('', index),
     path('agenda/', agenda),
-    path('wechat/', agenda),
+    path('wechat/', wechat),
     path('admin/', admin.site.urls),
 ]

@@ -95,6 +95,7 @@ iCal 日程: 输出完整的 iCalendar 格式文本，确保可以被正确解�
 def wechat(request):
     user_input = ""
     response_text = ""
+    output = False
     if request.method == "POST":
         user_input = request.POST.get('user_input', '')
         user_input = user_input.strip()
@@ -105,7 +106,6 @@ def wechat(request):
                 model="deepseek-ai/DeepSeek-V3.1",
                 messages=[
                     {"role": "system", "content": """
-
 **角色:**
 你是一位经验丰富、注重细节的专业行政助理。
 
@@ -118,33 +118,34 @@ def wechat(request):
 3.  **客观准确:** 所有输出内容必须严格基于原文，不得添加任何主观推断或原文未提及的信息。
 
 **输出格式:**
-请严格按照以下格式输出，如果某个类别下没有信息，则省略该类别标题。
+请严格按照以下格式输出，如果某个类别下没有信息，则省略该类别标题。类别标题之后都需要换行，使用<br>。
 
 **【核心信息摘要】**
-* 以无序列表的形式，总结所有重要的决定、结论、关键数据（如电话、地址、链接）和通知。
-    * 示例：项目 A 的最终方案已确定为方案二。
-    * 示例：本次活动的负责人是张三（电话：13812345678）。
+* 按行，总结所有重要的决定、结论、关键数据（如电话、地址、链接）和通知。每一行后输出<br>换行，每一行首不要输出*
+    示例：项目 A 的最终方案已确定为方案二。
+    示例：本次活动的负责人是张三（电话：13812345678）。
 
 **【待-办事项 (Action Items)】**
-* 以任务列表的形式，列出所有需要执行的具体任务，并明确负责人和截止日期（如果提到）。
-    * 格式: `[ ] 负责人/相关人: 具体任务内容 (截止日期: YYYY-MM-DD)`
-    * 示例: `[ ] @李四: 完成市场调研报告初稿 (截止日期: 2025-09-20)`
-    * 示例: `[ ] @所有人: 下班前提交上周工作总结`
+* 按行，列出所有需要执行的具体任务，并明确负责人和截止日期（如果提到）。每一行后输出<br>换行，每一行首不要输出*
+    格式: `负责人/相关人: 具体任务内容 (截止日期: YYYY-MM-DD)`
+    示例: `@李四: 完成市场调研报告初稿 (截止日期: 2025-09-20)`
+    示例: `@所有人: 下班前提交上周工作总结`
 
 **【日程安排】**
-* 以标准化的格式，列出所有确定的会议、活动或约会。
-    * 格式:
-        * **活动名称:** [具体活动]
-        * **日期:** YYYY-MM-DD (星期X)
-        * **时间:** HH:MM - HH:MM
-        * **地点:** [地点信息，线上或线下]
-        * **参与人:** [相关人员]
-    * 示例:
-        * **活动名称:** 第三季度项目复盘会
-        * **日期:** 2025-09-18 (星期四)
-        * **时间:** 14:30 - 16:00
-        * **地点:** 公司三号会议室
-        * **参与人:** 项目部全体成员
+* 以标准化的格式，列出所有确定的会议、活动或约会。每一行后输出<br>换行
+    格式:
+        **活动名称:** [具体活动]
+        **日期:** YYYY-MM-DD (星期X)
+        **时间:** HH:MM - HH:MM
+        **地点:** [地点信息，线上或线下]
+        **参与人:** [相关人员]
+    示例:
+        **活动名称:** 第三季度项目复盘会
+        **日期:** 2025-09-18 (星期四)
+        **时间:** 14:30 - 16:00
+        **地点:** 公司三号会议室
+        **参与人:** 项目部全体成员
+
 """},
                     {"role": "user", "content": user_input}
                 ],
@@ -152,6 +153,7 @@ def wechat(request):
             response_text = completion.choices[0].message.content
             html = markdown.markdown(response_text)
             response_text = html
+            output = True
             print(response_text)
 
-    return render(request, 'wechat.html', {'response_text': response_text, 'user_input': user_input})
+    return render(request, 'wechat.html', {'response_text': response_text, 'user_input': user_input, 'output': output})
