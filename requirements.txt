@@ -2,3 +2,4 @@ django
 openai
 markdown
 PyPDF2
+pdfplumber
