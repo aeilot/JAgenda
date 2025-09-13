@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendar Connections - JAgenda</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background: linear-gradient(135deg, #e0e7ff 0%, #f8fafc 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+            padding: 32px;
+        }
+
+        h1 {
+            color: #3b82f6;
+            font-size: 2.5rem;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .nav-links {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .nav-links a {
+            color: #3b82f6;
+            text-decoration: none;
+            margin: 0 16px;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+
+        .section {
+            margin-bottom: 32px;
+        }
+
+        .section h2 {
+            color: #2563eb;
+            margin-bottom: 16px;
+        }
+
+        .connection-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            background: #f8fafc;
+        }
+
+        .connection-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .connection-name {
+            font-weight: 600;
+            color: #1e40af;
+        }
+
+        .connection-status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-inactive {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 4px;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        input:focus, select:focus {
+            border-color: #3b82f6;
+            outline: none;
+        }
+
+        .btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            margin-right: 8px;
+        }
+
+        .btn:hover {
+            background: #2563eb;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .messages {
+            margin-bottom: 16px;
+        }
+
+        .message {
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+
+        .message-success {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .message-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .help-text {
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 4px;
+        }
+
+        .add-connection-form {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px;
+            background: #f9fafb;
+            margin-top: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>JAgenda</h1>
+        
+        <div class="nav-links">
+            <a href="{% url 'index' %}">Home</a>
+            <a href="{% url 'agenda' %}">Agenda</a>
+            <a href="{% url 'timeline' %}">Timeline</a>
+            <a href="{% url 'calendar_connections' %}">Calendar</a>
+        </div>
+
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="message {% if message.tags == 'error' %}message-error{% else %}message-success{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="section">
+            <h2>Calendar Connections</h2>
+            
+            {% if connections %}
+                {% for connection in connections %}
+                <div class="connection-card">
+                    <div class="connection-header">
+                        <span class="connection-name">{{ connection.name }}</span>
+                        <span class="connection-status {% if connection.is_active %}status-active{% else %}status-inactive{% endif %}">
+                            {% if connection.is_active %}Active{% else %}Inactive{% endif %}
+                        </span>
+                    </div>
+                    <div>
+                        <strong>Provider:</strong> {{ connection.get_provider_display }}<br>
+                        <strong>Username:</strong> {{ connection.username }}<br>
+                        {% if connection.last_sync %}
+                        <strong>Last Sync:</strong> {{ connection.last_sync|date:"M d, Y H:i" }}
+                        {% else %}
+                        <strong>Last Sync:</strong> Never
+                        {% endif %}
+                    </div>
+                    <div style="margin-top: 12px;">
+                        <form method="post" action="{% url 'sync_calendar' connection.id %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-small">Sync Now</button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>No calendar connections configured yet.</p>
+            {% endif %}
+        </div>
+
+        <div class="section">
+            <h2>Add New Connection</h2>
+            
+            <div class="add-connection-form">
+                <form method="post" action="{% url 'add_calendar_connection' %}">
+                    {% csrf_token %}
+                    
+                    <div class="form-group">
+                        <label for="name">Connection Name</label>
+                        <input type="text" id="name" name="name" required placeholder="My Apple Calendar">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="provider">Provider</label>
+                        <select id="provider" name="provider" required onchange="updateServerUrl()">
+                            <option value="">Select Provider</option>
+                            <option value="apple">Apple Calendar (iCloud)</option>
+                            <option value="google">Google Calendar</option>
+                            <option value="outlook">Outlook Calendar</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="server_url">Server URL</label>
+                        <input type="url" id="server_url" name="server_url" required 
+                               placeholder="https://caldav.icloud.com">
+                        <div class="help-text">CalDAV server URL for your calendar provider</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="username">Username/Email</label>
+                        <input type="text" id="username" name="username" required 
+                               placeholder="your-email@icloud.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" required 
+                               placeholder="App-specific password">
+                        <div class="help-text" id="password-help">
+                            {{ apple_config.help_text }}
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn">Add Connection</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateServerUrl() {
+            const provider = document.getElementById('provider').value;
+            const serverUrlField = document.getElementById('server_url');
+            const passwordHelp = document.getElementById('password-help');
+            
+            switch(provider) {
+                case 'apple':
+                    serverUrlField.value = 'https://caldav.icloud.com';
+                    passwordHelp.textContent = '{{ apple_config.help_text }}';
+                    break;
+                case 'google':
+                    serverUrlField.value = 'https://apidata.googleusercontent.com/caldav/v2/';
+                    passwordHelp.textContent = 'Use an app password or OAuth token for Google Calendar.';
+                    break;
+                case 'outlook':
+                    serverUrlField.value = 'https://outlook.office365.com/EWS/Exchange.asmx';
+                    passwordHelp.textContent = 'Use your Microsoft account credentials.';
+                    break;
+                default:
+                    serverUrlField.value = '';
+                    passwordHelp.textContent = 'Enter your calendar provider credentials.';
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timeline View - JAgenda</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <style>
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background: linear-gradient(135deg, #e0e7ff 0%, #f8fafc 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+            padding: 32px;
+        }
+
+        h1 {
+            color: #3b82f6;
+            font-size: 2.5rem;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .nav-links {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .nav-links a {
+            color: #3b82f6;
+            text-decoration: none;
+            margin: 0 16px;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+
+        .timeline-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .btn:hover {
+            background: #2563eb;
+        }
+
+        .btn.active {
+            background: #1d4ed8;
+        }
+
+        .timeline-section {
+            margin-bottom: 32px;
+        }
+
+        .timeline-chart {
+            width: 100%;
+            height: 400px;
+            margin-bottom: 24px;
+        }
+
+        .events-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+        }
+
+        .event-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .event-item:last-child {
+            border-bottom: none;
+        }
+
+        .event-info {
+            flex: 1;
+        }
+
+        .event-title {
+            font-weight: 600;
+            color: #1e40af;
+            margin-bottom: 4px;
+        }
+
+        .event-time {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .event-priority {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .priority-low { background: #e0f2fe; color: #0369a1; }
+        .priority-medium { background: #fef3c7; color: #d97706; }
+        .priority-high { background: #fed7d7; color: #dc2626; }
+        .priority-urgent { background: #fee2e2; color: #991b1b; }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-left: 8px;
+        }
+
+        .status-pending { background: #e0e7ff; color: #3730a3; }
+        .status-in_progress { background: #dbeafe; color: #1e40af; }
+        .status-completed { background: #dcfce7; color: #166534; }
+        .status-cancelled { background: #f3f4f6; color: #6b7280; }
+
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #3b82f6;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .add-event-form {
+            background: #f9fafb;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 16px;
+            display: none;
+        }
+
+        .add-event-form.show {
+            display: block;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 4px;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: #3b82f6;
+            outline: none;
+        }
+
+        @media (max-width: 768px) {
+            .timeline-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>JAgenda Timeline</h1>
+        
+        <div class="nav-links">
+            <a href="{% url 'index' %}">Home</a>
+            <a href="{% url 'agenda' %}">Agenda</a>
+            <a href="{% url 'timeline' %}">Timeline</a>
+            <a href="{% url 'calendar_connections' %}">Calendar</a>
+        </div>
+
+        <div class="stats-section">
+            <div class="stat-card">
+                <div class="stat-number">{{ events.count }}</div>
+                <div class="stat-label">Total Events</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="todayEvents">0</div>
+                <div class="stat-label">Today's Events</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="upcomingEvents">0</div>
+                <div class="stat-label">This Week</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="completedEvents">0</div>
+                <div class="stat-label">Completed</div>
+            </div>
+        </div>
+
+        <div class="timeline-controls">
+            <div class="view-toggle">
+                <button class="btn active" onclick="showTimelineView()">Timeline</button>
+                <button class="btn" onclick="showListView()">List View</button>
+            </div>
+            <button class="btn" onclick="toggleAddEventForm()">Add Event</button>
+        </div>
+
+        <div class="add-event-form" id="addEventForm">
+            <h3>Add New Event</h3>
+            <form onsubmit="addEvent(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="eventTitle">Title</label>
+                        <input type="text" id="eventTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="eventPriority">Priority</label>
+                        <select id="eventPriority">
+                            <option value="low">Low</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="high">High</option>
+                            <option value="urgent">Urgent</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="eventStart">Start Time</label>
+                        <input type="datetime-local" id="eventStart" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="eventEnd">End Time</label>
+                        <input type="datetime-local" id="eventEnd" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="eventDescription">Description</label>
+                    <textarea id="eventDescription" rows="3"></textarea>
+                </div>
+                
+                <button type="submit" class="btn">Add Event</button>
+                <button type="button" class="btn" onclick="toggleAddEventForm()" style="background: #6b7280;">Cancel</button>
+            </form>
+        </div>
+
+        <div class="timeline-section">
+            <div id="timelineView">
+                <canvas id="timelineChart" class="timeline-chart"></canvas>
+            </div>
+            
+            <div id="listView" style="display: none;">
+                <div class="events-list">
+                    {% for event in events %}
+                    <div class="event-item">
+                        <div class="event-info">
+                            <div class="event-title">{{ event.title }}</div>
+                            <div class="event-time">
+                                {{ event.start_time|date:"M d, Y H:i" }} - {{ event.end_time|date:"H:i" }}
+                                ({{ event.duration }} min)
+                            </div>
+                            {% if event.description %}
+                            <div style="font-size: 14px; color: #6b7280; margin-top: 4px;">
+                                {{ event.description|truncatechars:100 }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div style="display: flex; align-items: center;">
+                            <span class="event-priority priority-{{ event.priority }}">{{ event.get_priority_display }}</span>
+                            <span class="status-badge status-{{ event.status }}">{{ event.get_status_display }}</span>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="event-item">
+                        <div class="event-info">
+                            <div style="text-align: center; color: #6b7280; padding: 20px;">
+                                No events found for the selected period. Add some events or sync with your calendar!
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Timeline data from Django
+        const timelineData = {{ timeline_data|safe }};
+        let chart;
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeChart();
+            updateStats();
+        });
+
+        function initializeChart() {
+            const ctx = document.getElementById('timelineChart').getContext('2d');
+            
+            // Prepare data for Chart.js timeline
+            const datasets = timelineData.map(event => {
+                const priorityColors = {
+                    'low': '#3b82f6',
+                    'medium': '#f59e0b', 
+                    'high': '#ef4444',
+                    'urgent': '#dc2626'
+                };
+                
+                return {
+                    label: event.title,
+                    data: [{
+                        x: [new Date(event.start), new Date(event.end)],
+                        y: event.title
+                    }],
+                    backgroundColor: priorityColors[event.priority] || '#3b82f6',
+                    borderColor: priorityColors[event.priority] || '#3b82f6',
+                    borderWidth: 1
+                };
+            });
+
+            chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    datasets: datasets
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                unit: 'hour',
+                                displayFormats: {
+                                    hour: 'MMM dd HH:mm'
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: 'Time'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Events'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                title: function(context) {
+                                    const event = timelineData[context[0].datasetIndex];
+                                    return event.title;
+                                },
+                                label: function(context) {
+                                    const event = timelineData[context.datasetIndex];
+                                    const start = new Date(event.start).toLocaleString();
+                                    const end = new Date(event.end).toLocaleString();
+                                    return [
+                                        `Start: ${start}`,
+                                        `End: ${end}`,
+                                        `Duration: ${event.duration} minutes`,
+                                        `Priority: ${event.priority}`,
+                                        `Status: ${event.status}`
+                                    ];
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateStats() {
+            const today = new Date().toDateString();
+            const thisWeek = new Date();
+            thisWeek.setDate(thisWeek.getDate() + 7);
+            
+            let todayCount = 0;
+            let weekCount = 0;
+            let completedCount = 0;
+            
+            timelineData.forEach(event => {
+                const eventDate = new Date(event.start).toDateString();
+                const eventDateTime = new Date(event.start);
+                
+                if (eventDate === today) todayCount++;
+                if (eventDateTime <= thisWeek) weekCount++;
+                if (event.status === 'completed') completedCount++;
+            });
+            
+            document.getElementById('todayEvents').textContent = todayCount;
+            document.getElementById('upcomingEvents').textContent = weekCount;
+            document.getElementById('completedEvents').textContent = completedCount;
+        }
+
+        function showTimelineView() {
+            document.getElementById('timelineView').style.display = 'block';
+            document.getElementById('listView').style.display = 'none';
+            document.querySelectorAll('.view-toggle .btn')[0].classList.add('active');
+            document.querySelectorAll('.view-toggle .btn')[1].classList.remove('active');
+        }
+
+        function showListView() {
+            document.getElementById('timelineView').style.display = 'none';
+            document.getElementById('listView').style.display = 'block';
+            document.querySelectorAll('.view-toggle .btn')[0].classList.remove('active');
+            document.querySelectorAll('.view-toggle .btn')[1].classList.add('active');
+        }
+
+        function toggleAddEventForm() {
+            const form = document.getElementById('addEventForm');
+            form.classList.toggle('show');
+        }
+
+        async function addEvent(event) {
+            event.preventDefault();
+            
+            const formData = {
+                title: document.getElementById('eventTitle').value,
+                description: document.getElementById('eventDescription').value,
+                start_time: document.getElementById('eventStart').value,
+                end_time: document.getElementById('eventEnd').value,
+                priority: document.getElementById('eventPriority').value,
+                status: 'pending'
+            };
+
+            try {
+                const response = await fetch('{% url "create_event" %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('Event created successfully!');
+                    location.reload(); // Refresh to show new event
+                } else {
+                    alert('Error creating event: ' + result.error);
+                }
+            } catch (error) {
+                alert('Error creating event: ' + error.message);
+            }
+        }
+    </script>
+</body>
+
+</html>

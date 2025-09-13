@@ -96,6 +96,14 @@
 <body>
     <div class="container">
         <h2>JAgenda</h2>
+        
+        <div style="text-align: center; margin-bottom: 20px;">
+            <a href="{% url 'index' %}" style="color: #3b82f6; text-decoration: none; margin: 0 12px;">Home</a>
+            <a href="{% url 'agenda' %}" style="color: #3b82f6; text-decoration: none; margin: 0 12px; font-weight: 600;">Agenda</a>
+            <a href="{% url 'timeline' %}" style="color: #3b82f6; text-decoration: none; margin: 0 12px;">Timeline</a>
+            <a href="{% url 'calendar_connections' %}" style="color: #3b82f6; text-decoration: none; margin: 0 12px;">Calendar</a>
+        </div>
+        
         <form method="POST" enctype="multipart/form-data" id="agendaForm" action="/agenda/">
             {% csrf_token %}
             <label for="user_input">输入你的日程:</label><br>

@@ -2,3 +2,6 @@ django
 openai
 markdown
 PyPDF2
+pdfplumber
+caldav
+python-dateutil

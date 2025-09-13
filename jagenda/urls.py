@@ -16,10 +16,19 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from agenda.views import index, agenda
+from agenda.views import (
+    index, agenda, timeline_view, calendar_connections, 
+    add_calendar_connection, sync_calendar, events_api, create_event
+)
 
 urlpatterns = [
-    path('', index),
-    path('agenda/', agenda),
+    path('', index, name='index'),
+    path('agenda/', agenda, name='agenda'),
+    path('timeline/', timeline_view, name='timeline'),
+    path('calendar/', calendar_connections, name='calendar_connections'),
+    path('calendar/add/', add_calendar_connection, name='add_calendar_connection'),
+    path('calendar/sync/<uuid:connection_id>/', sync_calendar, name='sync_calendar'),
+    path('api/events/', events_api, name='events_api'),
+    path('api/events/create/', create_event, name='create_event'),
     path('admin/', admin.site.urls),
 ]
