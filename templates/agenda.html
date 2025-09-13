@@ -41,13 +41,15 @@
 <body>
     <div class="container">
         <h2>Agenda Scheduler</h2>
-        <form id="agendaForm">
-            <label for="scheduleInput">Enter your schedule:</label><br>
-            <textarea id="scheduleInput" placeholder="Type your agenda here..."></textarea><br>
+        <form method="POST" id="agendaForm" action="/agenda/">
+            {% csrf_token %}
+            <label for="user_input">Enter your schedule:</label><br>
+            <textarea id="user_input" name="user_input"
+                placeholder="Type your agenda here...">{{user_input}}</textarea><br>
             <button type="submit">Submit</button>
         </form>
         <h3>Output</h3>
-        <div id="output"></div>
+        <div id="output">{{response_text}}</div>
     </div>
     <script>
         const form = document.getElementById('agendaForm');
