@@ -70,4 +70,4 @@ MIT
 ## Acknowledgements
 - [Django](https://www.djangoproject.com/)
 - [OpenAI](https://openai.com/)
-- [PyPDF2](https://pypdf2.readthedocs.io/)
+- [pdfplumber](https://github.com/jsvine/pdfplumber)
