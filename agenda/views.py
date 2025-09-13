@@ -31,10 +31,10 @@ def agenda(request):
         if pdf_file:
             try:
                 with pdfplumber.open(pdf_file) as pdf:
-                    pdf_text = ""
+                    pdf_text = []
                     for page in pdf.pages:
-                        pdf_text += page.extract_text() or ""
-                user_input = pdf_text.strip()
+                        pdf_text += page.extract_table()
+                user_input = str(pdf_text)
             except Exception as e:
                 print(f"PDF parsing error: {e}")
                 response_text = "无法识别该PDF内容，请上传文本型PDF或手动输入日程。"
@@ -62,6 +62,22 @@ def agenda(request):
 每一行后都需要输出 <br>
 分隔符: 输出一个 ---。
 iCal 日程: 输出完整的 iCalendar 格式文本，确保可以被正确解析。
+                     
+补充信息，星期那一栏为 None 说明同上一个；对于上海交通大学
+第一节8:00-8:45
+第二节8:55-9:40
+第三节10:00-10:45
+第四节10:55-11:40
+第五节12:00-12:45
+第六节12:55-13:40
+第七节14:00-14:45
+第八节14:55-15:40
+第九节16:00-16:45
+第十节16:55-17:40
+第十一节18:00-18:45
+第十二节18:55-19:40
+第十一、十二、十三节晚上3节连上 18:00-20:20
+                     
 请严格按照此结构输出，不要添加任何额外的介绍性或总结性文字。现在，请等待我输入我的日程安排。
 """},
                     {"role": "user", "content": user_input}
