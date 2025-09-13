@@ -72,22 +72,49 @@
             color: #374151;
         }
     </style>
+    <style>
+h1 {
+width: 80px;
+text-align: center;
+color: cornflowerblue;
+}
+h1:hover {
+animation: animate 0.5s linear infinite;
+}
+@keyframes animate {
+0%, 25% {
+text-shadow: 2px 2px 2px #5e595a;
+}
+50% {
+text-shadow: 2px -2px 2px #575454;
+}
+75% {
+text-shadow: -2px 2px 2px #757474;
+}
+100% {
+text-shadow: -2px -2px 2px #626061;
+}
+}
+</style>
+
 </head>
 
 <body>
     <div class="container">
         <h1>JAgenda</h1>
-        <p>Your AI-powered assistant for sorting agendas and optimizing your time management.<br>
-            Let Jagenda help you organize, prioritize, and make the most of every day.</p>
-        <button class="cta-btn" onclick="window.location.href='/agenda/'">Get Started</button>
+        <p>你的智能AI辅助助手，帮你整理日程并优化时间管理。<br>
+           让JAgenda来帮助你进行组织、优先级排序，并充分利用每一天。</p>
+        <button class="cta-btn" onclick="window.location.href='/agenda/'">让我们开始吧</button>
+        <img src="https://img.88icon.com/download/jpg/202110/cfffe8c6ff7072b0121e2a7d1a2ed81e_610_769.jpg!con" alt="示例图片" width="300" height="200">
+
         <div class="features">
-            <h2>Key Features</h2>
+            <h2>主要特征</h2>
             <ul>
-                <li>Smart agenda sorting using AI algorithms</li>
-                <li>Personalized time management suggestions</li>
-                <li>Automatic prioritization of tasks and events</li>
-                <li>Easy-to-use interface for quick planning</li>
-                <li>Continuous learning to improve your productivity</li>
+                <li>利用AI算法进行智能日程排序</li>
+                <li>个性化时间管理建议</li>
+                <li>任务和事件的自动优先级排序</li>
+                <li>易于使用的界面便于进行快速规划</li>
+                <li>持续学习以提升你的工作效率</li>
             </ul>
         </div>
     </div>
