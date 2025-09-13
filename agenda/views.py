@@ -15,11 +15,8 @@ client = OpenAI(
 def agenda(request):
     user_input = ""
     response_text = ""
-    if request.method == "GET":
-        user_input = request.GET.get('user_input', '')  # Assumes a form field named 'user_input' in agenda.html
-        print(f"DEBUG: request.GET = {request.GET}")
-        print(f"DEBUG: user_input = '{user_input}'")
-
+    if request.method == "POST":
+        user_input = request.POST.get('user_input', '')  # Assumes a form field named 'user_input' in agenda.html
 
         if user_input:
             # Make OpenAI API request using the shared client
