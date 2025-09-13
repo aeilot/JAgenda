@@ -1,7 +1,8 @@
+from django.http import HttpResponse
 import pdfplumber
 from django.shortcuts import render
-import openai
 from openai import OpenAI
+
 import markdown
 import os
 from django.core.files.storage import default_storage
@@ -19,6 +20,7 @@ client = OpenAI(
 )
 
 def agenda(request):
+    output = False
     user_input = ""
     response_text = ""
     if request.method == "POST":
@@ -57,6 +59,7 @@ def agenda(request):
 规划三餐和休息时间。
 建议运动和放松的时间安排。
 点出日程中的关键繁忙时段，并提出应对策略。
+每一行后都需要输出 <br>
 分隔符: 输出一个 ---。
 iCal 日程: 输出完整的 iCalendar 格式文本，确保可以被正确解析。
 请严格按照此结构输出，不要添加任何额外的介绍性或总结性文字。现在，请等待我输入我的日程安排。
@@ -89,8 +92,9 @@ iCal 日程: 输出完整的 iCalendar 格式文本，确保可以被正确解�
                 html = markdown.markdown(response_text)
                 response_text = html
             print(response_text)
+            output = True
 
-    return render(request, 'agenda.html', {'response_text': response_text, 'user_input': user_input})
+    return render(request, 'agenda.html', {'response_text': response_text, 'user_input': user_input, 'output': output})
 
 def wechat(request):
     user_input = ""

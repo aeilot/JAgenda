@@ -110,11 +110,14 @@
 
             <button type="submit">获取个性化建议！</button>
         </form>
-        <h3>结果</h3>
-        <div id="output"> {% autoescape off %}
-            {{response_text}} {% endautoescape %}
-        </div>
     </div>
+    {% if output %}
+    <div id="output">
+        <h3>结果</h3>
+        {% autoescape off %}
+        {{response_text}} {% endautoescape %}
+    </div>
+    {% endif %}
     <script>
         const form = document.getElementById('agendaForm');
         const scheduleInput = document.getElementById('user_input');
