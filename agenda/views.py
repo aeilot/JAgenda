@@ -45,7 +45,7 @@ def agenda(request):
 
         if user_input:
             completion = client.chat.completions.create(
-                model="deepseek-ai/DeepSeek-V3.1",
+                model="Pro/deepseek-ai/DeepSeek-V3.1",
                 messages=[
                     {"role": "system", "content": """你是一位专业的学习与时间管理顾问。
 任务:
@@ -107,7 +107,7 @@ def wechat(request):
 
         if user_input:
             completion = client.chat.completions.create(
-                model="deepseek-ai/DeepSeek-V3.1",
+                model="Pro/deepseek-ai/DeepSeek-V3.1",
                 messages=[
                     {"role": "system", "content": """
 **角色:**
