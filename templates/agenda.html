@@ -3,94 +3,67 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JAgenda - AI Agenda Assistant</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <title>Agenda</title>
     <style>
         body {
-            font-family: 'Roboto', Arial, sans-serif;
-            background: linear-gradient(135deg, #e0e7ff 0%, #f8fafc 100%);
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            font-family: Arial, sans-serif;
+            margin: 40px;
         }
 
         .container {
-            background: #fff;
-            border-radius: 16px;
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
-            padding: 48px 32px;
-            max-width: 480px;
-            text-align: center;
+            max-width: 600px;
+            margin: auto;
         }
 
-        h1 {
-            color: #3b82f6;
-            font-size: 2.5rem;
-            margin-bottom: 16px;
+        label {
+            font-weight: bold;
         }
 
-        p {
-            color: #374151;
-            font-size: 1.2rem;
-            margin-bottom: 32px;
+        textarea {
+            width: 100%;
+            height: 100px;
+            margin-bottom: 10px;
         }
 
-        .cta-btn {
-            background: #3b82f6;
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            padding: 14px 32px;
-            font-size: 1rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: background 0.2s;
+        #output {
+            border: 1px solid #ccc;
+            padding: 15px;
+            min-height: 80px;
+            background: #f9f9f9;
         }
 
-        .cta-btn:hover {
-            background: #2563eb;
-        }
-
-        .features {
-            margin-top: 32px;
-            text-align: left;
-        }
-
-        .features h2 {
-            font-size: 1.3rem;
-            color: #2563eb;
-            margin-bottom: 12px;
-        }
-
-        .features ul {
-            padding-left: 20px;
-            color: #374151;
+        button {
+            padding: 8px 16px;
         }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <h1>JAgenda</h1>
-        <p>Your AI-powered assistant for sorting agendas and optimizing your time management.<br>
-            Let Jagenda help you organize, prioritize, and make the most of every day.</p>
-        <button class="cta-btn" onclick="window.location.href='/agenda/'">Get Started</button>
-        <div class="features">
-            <h2>Key Features</h2>
-            <ul>
-                <li>Smart agenda sorting using AI algorithms</li>
-                <li>Personalized time management suggestions</li>
-                <li>Automatic prioritization of tasks and events</li>
-                <li>Easy-to-use interface for quick planning</li>
-                <li>Continuous learning to improve your productivity</li>
-            </ul>
-        </div>
+        <h2>Agenda Scheduler</h2>
+        <form id="agendaForm">
+            <label for="scheduleInput">Enter your schedule:</label><br>
+            <textarea id="scheduleInput" placeholder="Type your agenda here..."></textarea><br>
+            <button type="submit">Submit</button>
+        </form>
+        <h3>Output</h3>
+        <div id="output"></div>
     </div>
+    <script>
+        const form = document.getElementById('agendaForm');
+        const scheduleInput = document.getElementById('scheduleInput');
+        const output = document.getElementById('output');
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const value = scheduleInput.value.trim();
+            if (value) {
+                output.textContent = "Your agenda:\n" + value;
+            } else {
+                output.textContent = "Please enter a schedule.";
+            }
+        });
+    </script>
 </body>
 
 </html>
