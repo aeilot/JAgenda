@@ -8,3 +8,20 @@ wheels/
 
 # Virtual environments
 .venv
+
+# Django files
+*.log
+*.pot
+local_settings.py
+media/
+
+# Temporary files
+*.tmp
+/tmp/
+
+# Screenshots and logs
+*.png
+*.jpg
+*.jpeg
+*.gif
+playwright-logs/

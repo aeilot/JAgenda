@@ -167,6 +167,13 @@ body::before {
   -webkit-text-fill-color: transparent;
   background-clip: text;
   position: relative;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+}
+
+.modern-title:hover {
+  transform: translateY(-2px);
+  filter: drop-shadow(0 4px 8px rgba(0, 122, 255, 0.2));
 }
 
 .modern-subtitle {
