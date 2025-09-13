@@ -3,134 +3,97 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Agenda</title>
-    <style>
-        body {
-            font-family: 'Roboto', Arial, sans-serif;
-            background: linear-gradient(135deg, #e0e7ff 0%, #f8fafc 100%);
-            margin: 0;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .container {
-            background: #fff;
-            border-radius: 16px;
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
-            padding: 40px 32px;
-            max-width: 480px;
-            width: 100%;
-            text-align: center;
-        }
-
-        h2 {
-            color: #3b82f6;
-            font-size: 2rem;
-            margin-bottom: 18px;
-        }
-
-        label {
-            font-weight: 500;
-            color: #374151;
-            display: block;
-            margin-bottom: 8px;
-            text-align: left;
-        }
-
-        textarea {
-            width: 100%;
-            height: 110px;
-            margin-bottom: 18px;
-            border-radius: 8px;
-            border: 1px solid #cbd5e1;
-            padding: 12px;
-            font-size: 1rem;
-            background: #f1f5f9;
-            resize: vertical;
-            transition: border 0.2s;
-        }
-
-        textarea:focus {
-            border: 1.5px solid #3b82f6;
-            outline: none;
-        }
-
-        #output {
-            border: 1px solid #cbd5e1;
-            padding: 18px;
-            min-height: 80px;
-            background: #f8fafc;
-            border-radius: 8px;
-            color: #374151;
-            margin-top: 10px;
-            font-size: 1.08rem;
-            text-align: left;
-        }
-
-        button {
-            background: #3b82f6;
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            padding: 12px 28px;
-            font-size: 1rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: background 0.2s;
-            margin-top: 8px;
-        }
-
-        button:hover {
-            background: #2563eb;
-        }
-
-        h3 {
-            color: #2563eb;
-            margin-top: 32px;
-            margin-bottom: 10px;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日程优化 - JAgenda</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/modern-apple.css' %}">
 </head>
 
 <body>
-    <div class="container">
-        <h2>JAgenda</h2>
-        <form method="POST" enctype="multipart/form-data" id="agendaForm" action="/agenda/">
-            {% csrf_token %}
-            <label for="user_input">输入你的日程:</label><br>
-            <textarea id="user_input" name="user_input"
-                placeholder="Type your agenda here...">{{user_input}}</textarea><br>
-            <label for="pdf_file" style="margin-top:16px;display:block;text-align:left;">或上传 PDF 日程表:</label>
-            <input type="file" id="pdf_file" name="pdf_file" accept="application/pdf"
-                style="margin-bottom:16px;width:100%;" />
-            <label>示例: 10:00 线性代数
-                12:00 数学分析</label><br>
+    <div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: var(--space-4);">
+        <div class="modern-container">
+            <h1 class="modern-title">JAgenda</h1>
+            <h2 class="modern-section-title" style="text-align: center; margin-bottom: var(--space-8);">日程优化</h2>
+            
+            <form method="POST" enctype="multipart/form-data" id="agendaForm" action="/agenda/">
+                {% csrf_token %}
+                
+                <div style="margin-bottom: var(--space-6);">
+                    <label for="user_input" class="modern-label">输入你的日程</label>
+                    <textarea 
+                        id="user_input" 
+                        name="user_input"
+                        class="modern-textarea"
+                        placeholder="请输入您的日程安排..."
+                        style="margin-bottom: var(--space-4);"
+                    >{{user_input}}</textarea>
+                    <div class="modern-example">示例: 10:00 线性代数 | 12:00 数学分析</div>
+                </div>
 
-            <button type="submit">获取个性化建议！</button>
-        </form>
+                <div class="modern-file-input">
+                    <input type="file" id="pdf_file" name="pdf_file" accept="application/pdf" />
+                    <label for="pdf_file" class="modern-file-label">
+                        📄 或上传 PDF 日程表
+                        <div style="font-size: var(--font-size-xs); margin-top: var(--space-1); opacity: 0.7;">
+                            支持 PDF 格式文件
+                        </div>
+                    </label>
+                </div>
+
+                <div class="modern-btn-group">
+                    <button type="submit" class="modern-btn modern-btn-primary" id="submitBtn">
+                        ✨ 获取个性化建议
+                    </button>
+                    <a href="/" class="modern-btn modern-btn-secondary">← 返回首页</a>
+                </div>
+            </form>
+
+            {% if output %}
+            <div class="modern-output">
+                <h3>🎯 个性化建议结果</h3>
+                {% autoescape off %}
+                {{response_text}}
+                {% endautoescape %}
+            </div>
+            {% endif %}
+        </div>
     </div>
-    {% if output %}
-    <div id="output">
-        <h3>结果</h3>
-        {% autoescape off %}
-        {{response_text}} {% endautoescape %}
-    </div>
-    {% endif %}
+
     <script>
         const form = document.getElementById('agendaForm');
+        const submitBtn = document.getElementById('submitBtn');
         const scheduleInput = document.getElementById('user_input');
-        const output = document.getElementById('output');
+        const fileInput = document.getElementById('pdf_file');
+        const fileLabel = document.querySelector('.modern-file-label');
 
+        // Add loading state to form submission
         form.addEventListener('submit', function (e) {
-            // // e.preventDefault();
-            // const value = scheduleInput.value.trim();
-            // if (value) {
-            //     output.textContent = "Loading...";
-            // } else {
-            //     output.textContent = "Please enter a schedule.";
-            // }
+            const hasInput = scheduleInput.value.trim() || fileInput.files.length > 0;
+            
+            if (!hasInput) {
+                e.preventDefault();
+                alert('请输入日程内容或上传PDF文件');
+                return;
+            }
+
+            submitBtn.classList.add('loading');
+            submitBtn.innerHTML = '✨ 正在生成建议...';
+            submitBtn.disabled = true;
+        });
+
+        // Update file input label
+        fileInput.addEventListener('change', function() {
+            if (this.files.length > 0) {
+                fileLabel.innerHTML = `📄 已选择: ${this.files[0].name}`;
+                fileLabel.style.borderColor = 'var(--primary-blue)';
+                fileLabel.style.background = 'var(--primary-blue-light)';
+                fileLabel.style.color = 'var(--primary-blue)';
+            } else {
+                fileLabel.innerHTML = '📄 或上传 PDF 日程表<div style="font-size: var(--font-size-xs); margin-top: var(--space-1); opacity: 0.7;">支持 PDF 格式文件</div>';
+                fileLabel.style.borderColor = 'var(--neutral-300)';
+                fileLabel.style.background = 'var(--neutral-50)';
+                fileLabel.style.color = 'var(--neutral-600)';
+            }
         });
     </script>
 </body>
