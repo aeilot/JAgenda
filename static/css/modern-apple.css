@@ -130,7 +130,7 @@ body::before {
   border-radius: var(--radius-3xl);
   box-shadow: var(--shadow-xl);
   padding: var(--space-12);
-  max-width: 520px;
+  max-width: 800px;
   width: 100%;
   text-align: center;
   position: relative;
