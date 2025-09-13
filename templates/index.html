@@ -5,124 +5,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JAgenda - AI Agenda Assistant</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Roboto', Arial, sans-serif;
-            background: linear-gradient(135deg, #e0e7ff 0%, #f8fafc 100%);
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .container {
-            background: #fff;
-            border-radius: 16px;
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
-            padding: 48px 32px;
-            max-width: 480px;
-            text-align: center;
-        }
-
-        h1 {
-            color: #3b82f6;
-            font-size: 2.5rem;
-            margin-bottom: 16px;
-        }
-
-        p {
-            color: #374151;
-            font-size: 1.2rem;
-            margin-bottom: 32px;
-        }
-
-        .cta-btn {
-            background: #3b82f6;
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            padding: 14px 32px;
-            font-size: 1rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .cta-btn:hover {
-            background: #2563eb;
-        }
-
-        .features {
-            margin-top: 32px;
-            text-align: left;
-        }
-
-        .features h2 {
-            font-size: 1.3rem;
-            color: #2563eb;
-            margin-bottom: 12px;
-        }
-
-        .features ul {
-            padding-left: 20px;
-            color: #374151;
-        }
-    </style>
-    <style>
-        h1 {
-            width: 80px;
-            text-align: center;
-            color: cornflowerblue;
-        }
-
-        h1:hover {
-            animation: animate 0.5s linear infinite;
-        }
-
-        @keyframes animate {
-
-            0%,
-            25% {
-                text-shadow: 2px 2px 2px #5e595a;
-            }
-
-            50% {
-                text-shadow: 2px -2px 2px #575454;
-            }
-
-            75% {
-                text-shadow: -2px 2px 2px #757474;
-            }
-
-            100% {
-                text-shadow: -2px -2px 2px #626061;
-            }
-        }
-    </style>
-
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/modern-apple.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 </head>
 
 <body>
-    <div class="container">
-        <h1>JAgenda</h1>
-        <p>你的智能AI辅助助手，帮你整理日程并优化时间管理。<br>
-            让JAgenda来帮助你进行组织、优先级排序，并充分利用每一天。</p>
-        <button class="cta-btn" onclick="window.location.href='/agenda/'">日程优化</button>
-        <button class="cta-btn" onclick="window.location.href='/wechat/'">微信通知整理</button>
+    <div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: var(--space-4);">
+        <div class="modern-container">
+            <h1 class="modern-title">JAgenda</h1>
+            <p class="modern-subtitle">
+                你的智能AI辅助助手，帮你整理日程并优化时间管理。<br>
+                让JAgenda来帮助你进行组织、优先级排序，并充分利用每一天。
+            </p>
+            
+            <div class="modern-btn-group">
+                <a href="/agenda/" class="modern-btn modern-btn-primary">日程优化</a>
+                <a href="/wechat/" class="modern-btn modern-btn-secondary">微信通知整理</a>
+            </div>
 
-        <div class="features">
-            <h2>主要特征</h2>
-            <ul>
-                <li>利用AI算法进行智能日程排序</li>
-                <li>个性化时间管理建议</li>
-                <li>任务和事件的自动优先级排序</li>
-                <li>易于使用的界面便于进行快速规划</li>
-                <li>持续学习以提升你的工作效率</li>
-            </ul>
+            <div class="modern-features">
+                <h2 class="modern-section-title">主要特征</h2>
+                <ul>
+                    <li>利用AI算法进行智能日程排序</li>
+                    <li>个性化时间管理建议</li>
+                    <li>任务和事件的自动优先级排序</li>
+                    <li>易于使用的界面便于进行快速规划</li>
+                    <li>持续学习以提升你的工作效率</li>
+                </ul>
+            </div>
         </div>
     </div>
 </body>
