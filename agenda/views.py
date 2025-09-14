@@ -16,7 +16,7 @@ def index(request):
 # Instantiate OpenAI client once at module level
 client = OpenAI(
     base_url="https://api.siliconflow.cn/v1",
-    api_key="sk-pqlgknchwqqmkafxqsvdfiiryujimuemsasskrcsmcnyowtu"
+    api_key="KEY"
 )
 
 def agenda(request):
