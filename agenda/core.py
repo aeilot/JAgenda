@@ -3,7 +3,7 @@ import requests
 
 class SiliconFlowTool:
     def __init__(self):
-        self.api_key = "sk-pqlgknchwqqmkafxqsvdfiiryujimuemsasskrcsmcnyowtu"
+        self.api_key = "sk-114514"
         self.base_url = "https://api.siliconflow.com/v1"
 
     def run(self, messages, model="Qwen/QwQ-32B", temperature=0.7, max_tokens=1024, user_id=None, system_prompt=None):
@@ -31,7 +31,7 @@ class SiliconFlowTool:
 # Example usage with OpenAI-like interface
 class SiliconFlowOpenAIAdapter:
     def __init__(self):
-        self.tool = SiliconFlowTool("sk-pqlgknchwqqmkafxqsvdfiiryujimuemsasskrcsmcnyowtu")
+        self.tool = SiliconFlowTool("sk-114514")
 
     def Completion_create(self, **kwargs):
         messages = kwargs.get("messages")
